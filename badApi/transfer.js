@@ -1,9 +1,81 @@
-// transfer.js
 const express = require('express');
 const router = express.Router();
 const db = require('./db');
 
-// Endpoint for transferring money between accounts
+/**
+ * @swagger
+ * tags:
+ *   name: Transfer
+ *   description: Money transfer-related endpoints
+ */
+
+/**
+ * @swagger
+ * /transfer:
+ *   post:
+ *     summary: Transfer money between accounts
+ *     description: Transfers money from one user account to another, simulating potential vulnerabilities such as insufficient balance or lack of transaction validation.
+ *     tags: [Transfer]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               from:
+ *                 type: string
+ *                 example: user1
+ *               to:
+ *                 type: string
+ *                 example: user2
+ *               amount:
+ *                 type: number
+ *                 format: float
+ *                 example: 100.0
+ *     responses:
+ *       200:
+ *         description: Transfer successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Transfer successful
+ *       400:
+ *         description: Insufficient balance or invalid request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Insufficient balance
+ *       404:
+ *         description: Account not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Account not found
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Internal server error
+ */
+
 router.post('/transfer', (req, res) => {
   const { from, to, amount } = req.body;
   

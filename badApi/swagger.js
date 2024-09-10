@@ -1,27 +1,17 @@
-// swagger.js
-const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
-const swaggerDefinition = {
-  openapi: '3.0.0',
-  info: {
-    title: 'Vulnerable Banking API',
-    version: '1.0.0',
-    description: 'A vulnerable API for pentesting based on OWASP API Top 10',
-  },
-  servers: [
-    {
-      url: 'http://localhost:3000',
-      description: 'Local server',
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'BadAPI Documentation',
+      version: '1.0.0',
+      description: 'API for a vulnerable fintech application developed by Badmus',
     },
-  ],
+  },
+  apis: ['./*.js'],
 };
 
-const options = {
-  swaggerDefinition,
-  apis: ['./**/*.js'], // Path to the API docs
-};
-
-const swaggerSpec = swaggerJSDoc(options);
-
-module.exports = { swaggerUi, swaggerSpec };
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
