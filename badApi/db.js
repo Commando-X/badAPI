@@ -3,9 +3,9 @@ const mysql = require('mysql2');
 
 const connection = mysql.createConnection({
   host: 'localhost',
-  user: 'badapi_user',
-  password: 'your_secure_password', //coming back here
-  database: 'badapi_db'
+  user: 'ghost',
+  password: 'ghost_sec', //coming back here
+  database: 'badapi_db2'
 });
 
 connection.connect((err) => {
