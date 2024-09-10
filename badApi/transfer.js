@@ -1,35 +1,35 @@
 // transfer.js
 const express = require('express');
 const router = express.Router();
+const db = require('./db');
 
-// In-memory database for storing account information
-let accounts = [
-  { id: 1, username: 'user1', accountNumber: '123456789', balance: 100 },
-  { id: 2, username: 'user2', accountNumber: '987654321', balance: 50 },
-];
-
-// Endpoint for transferring money between accounts (vulnerable to IDOR)
+// Endpoint for transferring money between accounts
 router.post('/transfer', (req, res) => {
   const { from, to, amount } = req.body;
+  
+  const findAccountsQuery = 'SELECT * FROM users WHERE username = ? OR username = ?';
+  db.query(findAccountsQuery, [from, to], (err, results) => {
+    if (err) {
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+    if (results.length < 2) {
+      return res.status(404).json({ message: 'Account not found' });
+    }
 
-  // Find accounts
-  const fromAccount = accounts.find(acc => acc.username === from);
-  const toAccount = accounts.find(acc => acc.accountNumber === to); // Use account number for recipient
+    const [fromAccount, toAccount] = results;
 
-  if (!fromAccount || !toAccount) {
-    return res.status(404).json({ message: 'Account not found' });
-  }
+    if (fromAccount.balance < amount) {
+      return res.status(400).json({ message: 'Insufficient balance' });
+    }
 
-  // Check balance
-  if (fromAccount.balance < amount) {
-    return res.status(400).json({ message: 'Insufficient balance' });
-  }
-
-  // Transfer money
-  fromAccount.balance -= amount;
-  toAccount.balance += amount;
-
-  return res.json({ message: 'Transfer successful' });
+    const transferQuery = 'UPDATE users SET balance = CASE username WHEN ? THEN balance - ? WHEN ? THEN balance + ? END WHERE username IN (?, ?)';
+    db.query(transferQuery, [from, amount, to, amount, from, to], (err) => {
+      if (err) {
+        return res.status(500).json({ message: 'Internal server error' });
+      }
+      return res.json({ message: 'Transfer successful' });
+    });
+  });
 });
 
 module.exports = router;
