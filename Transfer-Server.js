@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const PORT = 3000;
 
-//Creds 
+//Creds - Just to see if it still works
 const users = [
     { username: 'admin', password: 'admin123'},
     { username: 'user1', password: 'password1'},
