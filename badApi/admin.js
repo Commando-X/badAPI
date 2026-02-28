@@ -5,7 +5,7 @@ const router = express.Router();
 const users = []; // Simulated user storage for the sake of example
 const usersInfo = [
   { username: 'user1', dob: '1990-01-01', address: '5, 3rd mainland Bridge', cardInfo: '1234-5678-9012-3456', children: ['Child1', 'Child2'], balance: 1000, role: 'user' },
-  { username: 'user2', dob: '1985-05-15', address: '7, Ghost street', cardInfo: '9876-5432-1098-7654', children: ['Child3'], balance: 500, role: 'user' },
+  { username: 'user2', dob: '1985-05-17', address: '7, Ghost street', cardInfo: '9876-5432-1098-7654', children: ['Child3'], balance: 500, role: 'user' },
 ];
 
 /**

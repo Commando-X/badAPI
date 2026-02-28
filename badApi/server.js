@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 // Swagger setup
 const swaggerOptions = {
   swaggerDefinition: {
-    openapi: '3.0.0',
+    openapi: '3.0.1',
     info: {
       title: 'BadAPI Documentation',
       version: '1.0.0',
