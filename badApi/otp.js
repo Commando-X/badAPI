@@ -25,7 +25,7 @@ const router = express.Router();
  *               properties:
  *                 otp:
  *                   type: integer
- *                   example: 123456
+ *                   example: 1234567
  *       500:
  *         description: Internal server error
  *         content:
