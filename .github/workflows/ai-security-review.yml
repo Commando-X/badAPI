@@ -18,7 +18,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-      # id-token: write
+      id-token: write
 
     steps:
       - name: Checkout PR
@@ -29,7 +29,7 @@ jobs:
       - name: Claude security review
         uses: anthropics/claude-code-action@v1
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           prompt: |
             REPO: ${{ github.repository }}
             PR NUMBER: ${{ github.event.pull_request.number }}
