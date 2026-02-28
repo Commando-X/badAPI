@@ -3,7 +3,7 @@ const router = express.Router();
 
 // In-memory database for loan applications
 let loanApplications = [
-  { username: 'user1', amount: 2000, status: 'pending' },
+  { username: 'user1', amount: 5000, status: 'pending' },
 ];
 
 /**

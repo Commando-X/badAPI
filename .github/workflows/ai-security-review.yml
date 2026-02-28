@@ -3,18 +3,11 @@ name: Claude Security Review
 on:
   pull_request:
     types: [opened, synchronize, ready_for_review, reopened]
-    # Optional: only run when security-sensitive areas change
-    # paths:
-    #   - "src/auth/**"
-    #   - "src/api/**"
-    #   - "infra/**"
-    #   - "config/**"
 
 jobs:
   security:
     runs-on: ubuntu-latest
 
-    # Least privilege for PR review + required OIDC for the Claude GitHub App
     permissions:
       contents: read
       pull-requests: write
@@ -24,7 +17,84 @@ jobs:
       - name: Checkout PR
         uses: actions/checkout@v6
         with:
-          fetch-depth: 1
+          fetch-depth: 2
+
+      - name: Generate Security Policy Instructions
+        run: |
+          cat <<'EOF' > security_policy.md
+          You are a Principal Application Security Engineer performing a security-focused code review.
+
+          ## CRITICAL – Block PR if found:
+          - Hardcoded secrets, tokens, credentials
+          - SQL Injection
+          - Remote Code Execution
+          - Path traversal
+          - Unsafe deserialization
+          - Missing authentication/authorization on sensitive endpoints
+          - Sensitive data exposure
+
+          ## HIGH – Must Fix:
+          - XSS
+          - SSRF
+          - IDOR
+          - CSRF missing protections
+          - XXE
+          - Weak cryptography
+          - Race conditions affecting security
+
+          ## MEDIUM – Fix before production:
+          - Missing input validation
+          - Overly permissive CORS
+          - Missing security headers
+          - Missing rate limiting
+          - Dependency vulnerabilities
+          - Insufficient logging
+
+          ## Technology Specific Checks
+
+          ### Python
+          - eval(), exec()
+          - pickle/yaml.load unsafe
+          - subprocess shell=True
+          - missing authentication decorators
+          - weak password hashing
+          - JWT validation flaws
+
+          ### JavaScript/TypeScript
+          - innerHTML with user input
+          - eval()/Function()
+          - insecure postMessage
+          - localStorage for sensitive data
+          - exposed API keys
+
+          ### Infrastructure (Terraform)
+          - 0.0.0.0/0 ingress
+          - "*" IAM policies
+          - unencrypted storage
+          - public S3 buckets
+          - missing logging
+
+          ## Output Format
+
+          For each finding:
+
+          :red_circle: CRITICAL | :large_yellow_circle: HIGH | :large_orange_circle: MEDIUM | :large_blue_circle: LOW
+
+          **Issue:**  
+          **Location:** File:Line  
+          **Risk:**  
+          **Fix:**  
+          **Reference:** CWE/OWASP if applicable
+
+          ## Summary
+
+          - Security Score: PASS or FAIL
+          - Count by severity
+          - Must-fix before merge
+          - Positive security practices observed
+
+          Focus strictly on security. Ignore style or performance unless security-related.
+          EOF
 
       - name: Claude security review
         uses: anthropics/claude-code-action@v1
@@ -34,18 +104,11 @@ jobs:
             REPO: ${{ github.repository }}
             PR NUMBER: ${{ github.event.pull_request.number }}
 
-            Perform a security-focused review. Prioritize:
-            - AuthN/AuthZ issues (BOLA/BFLA/BOPLA)
-            - Injection (SQLi/NoSQLi/Command)
-            - SSRF, deserialization, crypto misuse
-            - Sensitive data exposure, logging issues
-            - Security misconfig in code/config
+            Below is the mandatory security review policy to follow strictly:
 
-            For each finding, include:
-            Severity: CRITICAL/HIGH/MEDIUM/LOW
-            What/Where
-            Impact
-            Recommendation
+            $(cat security_policy.md)
+
+            Analyze ALL changes in this PR and produce a structured security review according to the policy above.
 
             Use inline comments for line-level issues and one top-level summary comment.
 
