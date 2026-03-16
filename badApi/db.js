@@ -4,7 +4,7 @@ const mysql = require('mysql2');
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'ghost',
-  password: 'ghost_sec', //coming back here
+  password: 'ghost_sec1', //coming back here
   database: 'badapi_db2'
 });
 
