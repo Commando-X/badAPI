@@ -24,9 +24,6 @@ const db = require('./db'); // Import database connection
  *                 type: string
  *               password:
  *                 type: string
- *               role:
- *                 type: string
- *                 enum: [user, admin]
  *     responses:
  *       201:
  *         description: User registered successfully
@@ -38,7 +35,7 @@ const db = require('./db'); // Import database connection
 
 // Endpoint for registering a new user
 router.post('/', (req, res) => {
-  const { username, password, role } = req.body;
+  const { username, password } = req.body;
 
   // Check if username already exists
   const checkUserQuery = 'SELECT * FROM users WHERE username = ?';
@@ -53,7 +50,7 @@ router.post('/', (req, res) => {
 
     // Insert new user
     const insertUserQuery = 'INSERT INTO users (username, password, role) VALUES (?, ?, ?)';
-    db.query(insertUserQuery, [username, password, role], (err, result) => {
+    db.query(insertUserQuery, [username, password, 'user'], (err, result) => {
       if (err) {
         return res.status(500).json({ message: 'Internal server error' });
       }
