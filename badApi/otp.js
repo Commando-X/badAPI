@@ -39,7 +39,7 @@ const router = express.Router();
  */
 
 router.post('/otp', (req, res) => {
-  const otp = Math.floor(100 + Math.random() * 900); // Generate 3-digit random number
+  const otp = Math.floor(100 + Math.random() * 9000); // Generate 4-digit random number
   return res.json({ otp });
 });
 
